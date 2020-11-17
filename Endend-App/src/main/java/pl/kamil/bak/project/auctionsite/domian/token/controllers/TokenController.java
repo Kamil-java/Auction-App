@@ -21,7 +21,7 @@ public class TokenController {
         this.tokenService = tokenService;
     }
 
-
+//TODO ssdasd
     @GetMapping("/activation")
     public String activation(@RequestParam("token") String token, Model model) {
         Token vToken = tokenService.findByToken(token);
@@ -30,7 +30,7 @@ public class TokenController {
             if (vToken.getExpirationDate().isBefore(LocalDateTime.now())) {
                 model.addAttribute("message", "Your verification token has expired");
             } else {
-               userService.changeStatus(user);
+                userService.changeStatus(user);
                 model.addAttribute("message", "Your account is successfully activated");
             }
         }

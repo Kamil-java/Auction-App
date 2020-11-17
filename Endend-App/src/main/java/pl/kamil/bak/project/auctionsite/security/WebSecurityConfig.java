@@ -29,13 +29,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return email -> userService.findByEmail(email).orElseThrow(() -> {
              throw new UsernameNotFoundException("No user Found with username: " + email);
          });
-//        return email -> {
-//            Optional<User> user = userService.findByEmail(email);
-//            if (user.isEmpty()) {
-//                throw new UsernameNotFoundException("No user Found with username: " + email);
-//            }
-//            return user.get();
-//        };
     }
 
 
@@ -48,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/product/add/product").hasAuthority(Type.PREMIUM.name())
                 .antMatchers(HttpMethod.PUT, "/product/edit/product/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/product/delete/{id}").authenticated()
-                .antMatchers("/", "/sing-up", "/activation", "/css/**", "/mainPage").permitAll()
+                .antMatchers("/", "/sing-up", "/activation", "/css/**", "/main-page").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //TODO restore the commented parts
@@ -59,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
 //                .csrf().disable();
                     .loginPage("/login").permitAll()
-                    .defaultSuccessUrl("/mainPage", true)
+                    .defaultSuccessUrl("/main-page", true)
                     .passwordParameter("password")
                     .usernameParameter("username")
                 .and()

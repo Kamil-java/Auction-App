@@ -12,6 +12,7 @@ import pl.kamil.bak.project.auctionsite.domian.provider.session.UserSessionProvi
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Service
