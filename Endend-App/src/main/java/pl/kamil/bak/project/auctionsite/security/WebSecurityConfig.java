@@ -8,9 +8,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pl.kamil.bak.project.auctionsite.user.domian.service.UserService;
-import pl.kamil.bak.project.auctionsite.user.model.User;
-import pl.kamil.bak.project.auctionsite.user.model.enums.Type;
+import pl.kamil.bak.project.auctionsite.domian.user.service.UserService;
+import pl.kamil.bak.project.auctionsite.model.userEntity.User;
+import pl.kamil.bak.project.auctionsite.model.enums.Type;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -26,13 +26,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return email -> {
-            Optional<User> user = userService.findByEmail(email);
-            if (user.isEmpty()) {
-                throw new UsernameNotFoundException("No user Found with username: " + email);
-            }
-            return user.get();
-        };
+        return email -> userService.findByEmail(email).orElseThrow(() -> {
+             throw new UsernameNotFoundException("No user Found with username: " + email);
+         });
+//        return email -> {
+//            Optional<User> user = userService.findByEmail(email);
+//            if (user.isEmpty()) {
+//                throw new UsernameNotFoundException("No user Found with username: " + email);
+//            }
+//            return user.get();
+//        };
     }
 
 
@@ -45,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/product/add/product").hasAuthority(Type.PREMIUM.name())
                 .antMatchers(HttpMethod.PUT, "/product/edit/product/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/product/delete/{id}").authenticated()
-                .antMatchers("/", "/sing-up", "activation", "/css/**", "/mainPage").permitAll()
+                .antMatchers("/", "/sing-up", "/activation", "/css/**", "/mainPage").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //TODO restore the commented parts

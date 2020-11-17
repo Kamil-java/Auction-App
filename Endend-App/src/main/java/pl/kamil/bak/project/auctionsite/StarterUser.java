@@ -1,23 +1,25 @@
 package pl.kamil.bak.project.auctionsite;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.kamil.bak.project.auctionsite.product.model.Product;
-import pl.kamil.bak.project.auctionsite.user.dao.UserRepository;
-import pl.kamil.bak.project.auctionsite.user.domian.service.LocationService;
-import pl.kamil.bak.project.auctionsite.user.dto.AddressDto;
-import pl.kamil.bak.project.auctionsite.user.dto.LocationDto;
-import pl.kamil.bak.project.auctionsite.user.model.*;
-import pl.kamil.bak.project.auctionsite.user.model.enums.Role;
-import pl.kamil.bak.project.auctionsite.user.model.enums.Status;
-import pl.kamil.bak.project.auctionsite.user.model.enums.Type;
+import org.springframework.stereotype.Component;
+import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
+import pl.kamil.bak.project.auctionsite.domian.user.dao.UserRepository;
+import pl.kamil.bak.project.auctionsite.domian.user.service.LocationService;
+import pl.kamil.bak.project.auctionsite.domian.user.dto.AddressDto;
+import pl.kamil.bak.project.auctionsite.domian.user.dto.LocationDto;
+import pl.kamil.bak.project.auctionsite.model.enums.Role;
+import pl.kamil.bak.project.auctionsite.model.enums.Status;
+import pl.kamil.bak.project.auctionsite.model.enums.Type;
+import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
-@Configuration
+
+//TODO Garbage class to be removed
+
+@Component
 public class StarterUser {
 
     public StarterUser(UserRepository userRepository, PasswordEncoder encoder, LocationService locationService) {

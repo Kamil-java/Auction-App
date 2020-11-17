@@ -22,7 +22,7 @@
     </div>
     <div class="form-group">
         <label for="Email" class="text-w">Email address</label>
-        <input type="email" class="form-control " id="Email" aria-describedby="emailHelp" name="email" th:value="*{email}" th:errorClass="is-invalid" >
+        <input type="email" class="form-control " id="Email" aria-describedby="emailHelp" name="email" th:value="*{email}" th:errorClass="is-invalid">
         <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback"></div>
     </div>
     <div class="form-group">
