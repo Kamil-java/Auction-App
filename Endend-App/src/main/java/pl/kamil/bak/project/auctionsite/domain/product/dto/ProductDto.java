@@ -1,47 +1,24 @@
-package pl.kamil.bak.project.auctionsite.model.productEntity;
+package pl.kamil.bak.project.auctionsite.domain.product.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import pl.kamil.bak.project.auctionsite.model.biddingEntity.Bidding;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
-import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "product")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
+public class ProductDto {
+    @NotBlank
+    @Size(min = 2, max = 20,message = "value from 2 to 20")
     private String name;
-
+    @NotBlank
+    @Size(min = 2, max = 20,message = "value from 2 to 20")
     private String description;
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    @Min(1)
     private BigDecimal price;
 
-    //TODO delete this below constructor after ended project
 
-    public Product( String name,  String description, User user, BigDecimal price) {
-        this.name = name;
-        this.description = description;
-        this.user = user;
-        this.price = price;
-
-    }
-
-    public Product() {
-    }
-
-    public Long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -72,8 +49,6 @@ public class Product {
     }
 
     public void setPrice(BigDecimal price) {
-
         this.price = price;
     }
-
 }

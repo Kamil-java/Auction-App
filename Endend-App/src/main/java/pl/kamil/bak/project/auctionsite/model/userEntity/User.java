@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.kamil.bak.project.auctionsite.model.biddingEntity.Bidding;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.enums.Role;
 import pl.kamil.bak.project.auctionsite.model.enums.Status;
@@ -30,20 +31,26 @@ public class User implements UserDetails {
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
     private LocalDateTime date;
-    private String status;
-    private String type;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @Enumerated(EnumType.STRING)
+    private Type type;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @JsonManagedReference
     @OneToMany(targetEntity = Product.class, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Product> product = new ArrayList<>();
+    @JsonManagedReference
+    @OneToMany(targetEntity = Bidding.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Bidding> bidding = new ArrayList<>();
 
 
 
     public User() {
         this.date = LocalDateTime.now();
-        this.status = Status.INACTIVE.name();
-        this.type = Type.NORMAL.name();
-        this.role = Role.USER.name();
+        this.status = Status.INACTIVE;
+        this.type = Type.NORMAL;
+        this.role = Role.USER;
     }
 
     public Long getId() {
@@ -76,7 +83,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority(role), new SimpleGrantedAuthority(type));
+        return Arrays.asList(new SimpleGrantedAuthority(role.name()), new SimpleGrantedAuthority(type.name()));
     }
 
     @Override
@@ -96,7 +103,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !Status.BLOCKED.name().equals(status);
+        return !Status.BLOCKED.equals(status);
     }
 
     @Override
@@ -106,7 +113,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return Status.ACTIVE.name().equals(status);
+        return Status.ACTIVE.equals(status);
     }
 
     public void setPassword(String password) {
@@ -121,27 +128,27 @@ public class User implements UserDetails {
         this.date = date;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -151,5 +158,13 @@ public class User implements UserDetails {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public List<Bidding> getBidding() {
+        return bidding;
+    }
+
+    public void setBidding(List<Bidding> bidding) {
+        this.bidding = bidding;
     }
 }
