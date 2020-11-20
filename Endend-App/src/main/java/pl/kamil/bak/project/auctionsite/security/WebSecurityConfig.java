@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.kamil.bak.project.auctionsite.domain.user.service.UserService;
 import pl.kamil.bak.project.auctionsite.model.enums.Type;
 
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
@@ -34,34 +33,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/bidding", "/product/own/product").authenticated()
-                .antMatchers(HttpMethod.GET, "/product/all").permitAll()
-                .antMatchers(HttpMethod.POST, "/product/add/product").hasAuthority(Type.PREMIUM.name())
-                .antMatchers(HttpMethod.PUT, "/product/edit/product/{id}").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/product/delete/{id}").authenticated()
+                .antMatchers(HttpMethod.GET,"/bidding", "/products/owned").authenticated()
+                .antMatchers(HttpMethod.GET, "/products").permitAll()
+                .antMatchers(HttpMethod.POST, "/products").hasAuthority(Type.PREMIUM.name())
+                .antMatchers(HttpMethod.PUT, "/product/{id}").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/products/{id}").authenticated()
                 .antMatchers("/", "/sing-up", "/activation", "/css/**", "/main-page").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 //TODO restore the commented parts
                 .formLogin()
-//                .permitAll()
-//                .and()
-//                .httpBasic()
-//                .and()
-//                .csrf().disable();
-                    .loginPage("/login").permitAll()
-                    .defaultSuccessUrl("/main-page", true)
-                    .passwordParameter("password")
-                    .usernameParameter("username")
+                .permitAll()
                 .and()
-                .rememberMe()
-                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
-                    .key("userSecret!")
-                    .rememberMeParameter("remember-me")
+                .httpBasic()
                 .and()
-                .logout()
-                    .clearAuthentication(true)
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "remember-me", "Idea-52a54c20lll").permitAll();
+                .csrf().disable();
+//                    .loginPage("/login").permitAll()
+//                    .defaultSuccessUrl("/main-page", true)
+//                    .passwordParameter("password")
+//                    .usernameParameter("username")
+//                .and()
+//                .rememberMe()
+//                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+//                    .key("userSecret!")
+//                    .rememberMeParameter("remember-me")
+//                .and()
+//                .logout()
+//                    .clearAuthentication(true)
+//                    .invalidateHttpSession(true)
+//                    .deleteCookies("JSESSIONID", "remember-me", "Idea-52a54c20lll").permitAll();
     }
 }

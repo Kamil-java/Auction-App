@@ -26,37 +26,43 @@ public class BiddingService {
         this.modelMapper = modelMapper;
     }
 
-    public List<Bidding> getAll(){
+    public List<Bidding> getAll() {
         return checkingIfItIsEmpty(biddingRepository.findAll());
     }
 
-    public List<Bidding> getAllBiddingByUser(String name){
+    public List<Bidding> getAllBiddingByUser(String name) {
         return checkingIfItIsEmpty(biddingRepository.findBiddingByUserUserName(name));
     }
 
-    public Bidding getBidding(long id){
+    public Bidding getBidding(long id) {
+       biddingRepository.findById(id).ifPresent(bidding -> {
+            if (bidding.getEndBidding().isBefore(LocalDateTime.now())) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        });
         return biddingRepository.findById(id).orElseThrow(() -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         });
+
     }
 
     @Transactional
-    public Bidding crateBidding(BiddingDto biddingDto, User user){
+    public Bidding crateBidding(BiddingDto biddingDto, User user) {
         Bidding bidding = new Bidding();
-        if (biddingDto.isPromoted() && user.getType().equals(Type.PREMIUM)){
+        if (biddingDto.isPromoted() && user.getType().equals(Type.PREMIUM)) {
             biddingDto.setPromoted(true);
         }
         biddingDto.setUser(user);
-        modelMapper.map(biddingDto,bidding);
+        modelMapper.map(biddingDto, bidding);
         return biddingRepository.save(bidding);
     }
 
     @Transactional
-    public Bidding updatePrice(User user, double price, long id){
+    public Bidding updatePrice(User user, double price, long id) {
         Optional<Bidding> first = getAllBiddingByUser(user.getUserName()).stream()
                 .filter(bidding -> bidding.getId().equals(getBidding(id).getId()))
                 .findFirst();
-        if (first.isPresent()){
+        if (first.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         getBidding(id).setCurrentPrice(BigDecimal.valueOf(price));
@@ -64,19 +70,12 @@ public class BiddingService {
         return biddingRepository.save(getBidding(id));
     }
 
-    //TODO it should be without calling url
-
-    @Transactional
-    public void deleteById(long id){
-        if (getBidding(id).getEndBidding().isBefore(LocalDateTime.now())){
-            biddingRepository.deleteById(id);
-        }
-    }
-
-    private List<Bidding> checkingIfItIsEmpty(List<Bidding> bidding){
-        if (bidding.isEmpty()){
+    private List<Bidding> checkingIfItIsEmpty(List<Bidding> bidding) {
+        bidding.removeIf(bidding1 -> bidding1.getEndBidding().isBefore(LocalDateTime.now()));
+        if (bidding.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
+
         return bidding;
     }
 }

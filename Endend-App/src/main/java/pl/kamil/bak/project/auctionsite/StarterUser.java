@@ -42,6 +42,7 @@ public class StarterUser {
         Product shoes = new Product("Buty", "Nike nowe", admin, BigDecimal.valueOf(200.00));
         biddingAdmin.setMinAmount(shoes.getPrice());
         biddingAdmin.setPromoted(true);
+        biddingAdmin.setCurrentPrice(biddingAdmin.getMinAmount());
         biddingAdmin.setUser(admin);
         biddingAdmin.setProduct(shoes);
         admin.setEmail("kam@op.pl");
@@ -59,8 +60,9 @@ public class StarterUser {
         Product phone = new Product("Telefon", "Samsung S8", user, BigDecimal.valueOf(2000.00));
         biddingUser.setMinAmount(phone.getPrice());
         biddingUser.setPromoted(false);
+        biddingUser.setCurrentPrice(biddingUser.getMinAmount());
         biddingUser.setUser(user);
-        biddingUser.setEndBidding(LocalDateTime.now().plusSeconds(20));
+        biddingUser.setEndBidding(LocalDateTime.now().plusSeconds(10));
         biddingUser.setProduct(phone);
         user.setEmail("lau@op.pl");
         user.setUserName("Laura");

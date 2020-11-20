@@ -45,9 +45,4 @@ public class BiddingController {
         return biddingService.updatePrice(sessionProvider.getPrincipal(), price, id);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public void delete(@PathVariable("id") long id){
-        biddingService.deleteById(id);
-    }
 }
