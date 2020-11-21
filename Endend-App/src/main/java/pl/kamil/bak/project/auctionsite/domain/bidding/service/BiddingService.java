@@ -65,7 +65,11 @@ public class BiddingService {
         if (first.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
+        if (price <= getBidding(id).getCurrentPrice().doubleValue()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         getBidding(id).setCurrentPrice(BigDecimal.valueOf(price));
+        getBidding(id).setWinnerUserId(user.getId());
         getBidding(id).getProduct().setPrice(BigDecimal.valueOf(price));
         return biddingRepository.save(getBidding(id));
     }

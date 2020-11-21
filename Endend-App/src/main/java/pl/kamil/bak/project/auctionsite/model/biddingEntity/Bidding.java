@@ -24,6 +24,7 @@ public class Bidding {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    private long winnerUserId;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
@@ -91,5 +92,13 @@ public class Bidding {
 
     public void setCurrentPrice(BigDecimal currentPrice) {
         this.currentPrice = currentPrice;
+    }
+
+    public long getWinnerUserId() {
+        return winnerUserId;
+    }
+
+    public void setWinnerUserId(long winnerUserId) {
+        this.winnerUserId = winnerUserId;
     }
 }

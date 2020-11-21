@@ -62,7 +62,7 @@ public class StarterUser {
         biddingUser.setPromoted(false);
         biddingUser.setCurrentPrice(biddingUser.getMinAmount());
         biddingUser.setUser(user);
-        biddingUser.setEndBidding(LocalDateTime.now().plusSeconds(10));
+//        biddingUser.setEndBidding(LocalDateTime.now().plusSeconds(30));
         biddingUser.setProduct(phone);
         user.setEmail("lau@op.pl");
         user.setUserName("Laura");
@@ -73,8 +73,27 @@ public class StarterUser {
         user.setProduct(Collections.singletonList(phone));
         user.setBidding(Collections.singletonList(biddingUser));
 
+        User user2 = new User();
+        Bidding biddingUser2 = new Bidding();
+        Product comp = new Product("Komputer", "Lenovo", user2, BigDecimal.valueOf(2000.00));
+        biddingUser2.setMinAmount(comp.getPrice());
+        biddingUser2.setPromoted(false);
+        biddingUser2.setCurrentPrice(biddingUser2.getMinAmount());
+        biddingUser2.setUser(user2);
+//        biddingUser.setEndBidding(LocalDateTime.now().plusSeconds(30));
+        biddingUser2.setProduct(comp);
+        user2.setEmail("ola@op.pl");
+        user2.setUserName("ola");
+        user2.setPassword(encoder.encode("pass"));
+        user2.setRole(Role.USER);
+        user2.setStatus(Status.ACTIVE);
+        user2.setLocation(locationService.addLocation(new LocationDto("slask", "Bytom", null), new AddressDto("Wozowa", "28", "48303")));
+        user2.setProduct(Collections.singletonList(comp));
+        user2.setBidding(Collections.singletonList(biddingUser2));
+
         userRepository.save(admin);
         userRepository.save(user);
+        userRepository.save(user2);
     }
 
 }

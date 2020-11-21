@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import pl.kamil.bak.project.auctionsite.domain.product.dao.ProductRepository;
 import pl.kamil.bak.project.auctionsite.domain.product.dto.ProductDto;
@@ -26,7 +27,11 @@ public class ProductService {
     }
 
     public List<Product> getUserByIdProduct(User user) {
-        return productRepository.findProductByUserId(user.getId());
+        List<Product> productByUserId = productRepository.findProductByUserId(user.getId());
+        if (productByUserId.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return productByUserId;
     }
 
     public List<Product> getAll() {
@@ -38,6 +43,7 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         });
     }
+
 
     @Transactional
     public Product addNewProduct(ProductDto productDto) {

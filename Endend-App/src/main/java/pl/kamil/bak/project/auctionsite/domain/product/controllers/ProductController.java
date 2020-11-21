@@ -38,6 +38,7 @@ public class ProductController {
 
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Product addProduct(@RequestBody @Validated ProductDto productDto) {
         productDto.setUser(getPrincipal.getPrincipal());
         return productService.addNewProduct(productDto);
