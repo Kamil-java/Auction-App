@@ -1,23 +1,21 @@
 package pl.kamil.bak.project.auctionsite.domain.product.service;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.server.ResponseStatusException;
 import pl.kamil.bak.project.auctionsite.domain.product.dao.ProductRepository;
 import pl.kamil.bak.project.auctionsite.domain.product.dto.ProductDto;
+import pl.kamil.bak.project.auctionsite.domain.provider.session.UserSessionProvider;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
@@ -29,9 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
@@ -40,49 +36,51 @@ class ProductServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
-    @InjectMocks
+    @Mock
+    private UserSessionProvider sessionProvider;
+
     private ProductService productService;
 
 
     @BeforeEach
     public void init() {
-        given(productRepository.findAll()).willReturn(prepareData());
-        given(productRepository.findProductByUserId(2L)).willReturn(prepareData());
-        given(productRepository.findById(2L)).willReturn(java.util.Optional.ofNullable(prepareData().get(2)));
-        given(productRepository.save(any())).willReturn(convertDto());
-
+        productService = new ProductService(productRepository,modelMapper, sessionProvider);
     }
 
 
     @Test
     @DisplayName("should be return product by Id for User")
     void getUserByIdProduct() {
+        given(productRepository.findProductByUserId(2L)).willReturn(prepareData());
         User user = new User();
         user.setId(2L);
         List<Product> userByIdProduct = productService.getUserByIdProduct(user);
-        Assert.assertThat(userByIdProduct, hasSize(5));
+        assertThat(userByIdProduct).hasSize(5);
 
     }
 
     @Test
     @DisplayName("should be return all Array")
     void getAll() {
+        given(productRepository.findAll()).willReturn(prepareData());
         List<Product> products = productService.getAll();
-        Assert.assertThat(products, hasSize(5));
+        assertThat(products).hasSize(5);
     }
 
     @Test
     @DisplayName("should be return product by id")
     void getProductById() {
+        given(productRepository.findById(2L)).willReturn(java.util.Optional.ofNullable(prepareData().get(2)));
         Product productById = productService.getProductById(2L);
-        Assert.assertEquals(productById.getName(), "Skuter");
-        Assert.assertEquals(productById.getDescription(), "Brak");
-        Assert.assertEquals(productById.getPrice(), BigDecimal.valueOf(4000.00));
+        assertEquals(productById.getName(), "Skuter");
+        assertEquals(productById.getDescription(), "Brak");
+        assertEquals(productById.getPrice(), BigDecimal.valueOf(4000.00));
     }
 
     @Test
     @DisplayName("should be return throw")
     void getProductWithThrow() {
+
         User user = new User();
         user.setId(1L);
         assertThrows(ResponseStatusException.class, () -> productService.getProductById(1L));
@@ -92,6 +90,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("should be save product, don't have to be null")
     void addNewProduct() {
+        given(productRepository.save(any())).willReturn(convertDto());
         Product product = productService.addNewProduct(prepareProductDto());
         Assertions.assertNotNull(product);
         assertEquals(product.getName(), prepareProductDto().getName());
@@ -102,6 +101,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("should be update product, don't have to be null")
     void update() {
+        given(productRepository.save(any())).willReturn(convertDto());
         Product update = productService.update(prepareProductDto(), convertDto());
         Assertions.assertNotNull(update);
         assertEquals(update.getName(), prepareProductDto().getName());
