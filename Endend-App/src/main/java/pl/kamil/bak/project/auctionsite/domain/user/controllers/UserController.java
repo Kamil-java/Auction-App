@@ -60,23 +60,24 @@ public class UserController {
 
 
     @PostMapping("/sing-up")
-    public String save(@Valid UserDto userDto, BindingResult result, RedirectAttributes redirectAttributes, LocationDto location, AddressDto address) {
-        if (userService.userEmailExists(userDto.getEmail())) {
+    public String save(@Valid UserDto user, BindingResult result, RedirectAttributes redirectAttributes, LocationDto location, AddressDto address) {
+        if (userService.userEmailExists(user.getEmail())) {
             result.addError(new FieldError("userDto", "email", "Email address already exist"));
         }
-        if (userService.userNameExists(userDto.getUserName())){
+        if (userService.userNameExists(user.getUserName())){
             result.addError(new FieldError("userDto", "userName", "A user with that name already exists"));
         }
-        if (userDto.getPassword() != null && userDto.getConfirmPassword() != null) {
-            if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
+        if (user.getPassword() != null && user.getConfirmPassword() != null) {
+            if (!user.getPassword().equals(user.getConfirmPassword())) {
                 result.addError(new FieldError("userDto", "confirmPassword", "Password must match"));
             }
         }
+        
         if (result.hasErrors()) {
             return "sing-up";
         }
         redirectAttributes.addFlashAttribute("message", "Success! Your registration is now complete, pleas check your email to activate your account!");
-        userService.addUser(userDto, location, address);
+        userService.addUser(user, location, address);
 
         return "redirect:/login";
     }

@@ -45,24 +45,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //TODO restore the commented parts
                 .formLogin()
-                .permitAll()
-                .and()
-                .httpBasic()
-                .and()
-                .csrf().disable();
-//                    .loginPage("/login").permitAll()
-//                    .defaultSuccessUrl("/main-page", true)
-//                    .passwordParameter("password")
-//                    .usernameParameter("username")
+//                .permitAll()
 //                .and()
-//                .rememberMe()
-//                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
-//                    .key("userSecret!")
-//                    .rememberMeParameter("remember-me")
+//                .httpBasic()
 //                .and()
-//                .logout()
-//                    .clearAuthentication(true)
-//                    .invalidateHttpSession(true)
-//                    .deleteCookies("JSESSIONID", "remember-me", "Idea-52a54c20lll").permitAll();
+//                .csrf().disable();
+                    .loginPage("/login").permitAll()
+                    .defaultSuccessUrl("/main-page", true)
+                    .passwordParameter("password")
+                    .usernameParameter("username")
+                .and()
+                .rememberMe()
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+                    .key("userSecret!")
+                    .rememberMeParameter("remember-me")
+                .and()
+                .logout()
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID", "remember-me", "Idea-52a54c20lll").permitAll();
     }
 }

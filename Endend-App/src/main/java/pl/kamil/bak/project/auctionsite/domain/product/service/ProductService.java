@@ -13,6 +13,7 @@ import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -67,14 +68,14 @@ public class ProductService {
 
     @Transactional
     public void deleteById(long id) {
-        productRepository.findById(id).ifPresent(product -> {
-            if (checkingUserIsExist(product)) {
+        Optional<Product> byId = productRepository.findById(id);
+        if (byId.isPresent()){
+            if (checkingUserIsExist(byId.get())) {
                 productRepository.deleteById(id);
             } else {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             }
-        });
-        if (!productRepository.existsById(id)) {
+        }else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }

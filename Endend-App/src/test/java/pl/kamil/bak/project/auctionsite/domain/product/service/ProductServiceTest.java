@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -22,9 +24,11 @@ import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -34,9 +38,6 @@ class ProductServiceTest {
     private ProductRepository productRepository;
 
     @Mock
-    private ModelMapper modelMapper;
-
-    @Mock
     private UserSessionProvider sessionProvider;
 
     private ProductService productService;
@@ -44,65 +45,90 @@ class ProductServiceTest {
 
     @BeforeEach
     public void init() {
-        productService = new ProductService(productRepository,modelMapper, sessionProvider);
+        ModelMapper modelMapper = new ModelMapper();
+        productService = new ProductService(productRepository, modelMapper, sessionProvider);
     }
 
 
     @Test
-    @DisplayName("should be return product by Id for User")
-    void getUserByIdProduct() {
-        given(productRepository.findProductByUserId(2L)).willReturn(prepareData());
+    void shouldBeReturnUserByIdProduct() {
+        //given
+        given(productRepository.findProductByUserId(2L)).willReturn(prepareProductsData());
+
+        //when
         User user = new User();
         user.setId(2L);
         List<Product> userByIdProduct = productService.getUserByIdProduct(user);
+
+        //then
         assertThat(userByIdProduct).hasSize(5);
 
     }
 
     @Test
-    @DisplayName("should be return all Array")
-    void getAll() {
-        given(productRepository.findAll()).willReturn(prepareData());
+    void shouldBeReturnArrayProducts() {
+        //given
+        given(productRepository.findAll()).willReturn(prepareProductsData());
+
+        //when
         List<Product> products = productService.getAll();
+
+        //then
         assertThat(products).hasSize(5);
     }
 
     @Test
-    @DisplayName("should be return product by id")
-    void getProductById() {
-        given(productRepository.findById(2L)).willReturn(java.util.Optional.ofNullable(prepareData().get(2)));
+    void shouldBeReturnProductById() {
+        //given
+        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(prepareProductsData().get(2)));
+
+        //when
         Product productById = productService.getProductById(2L);
+
+        //then
         assertEquals(productById.getName(), "Skuter");
         assertEquals(productById.getDescription(), "Brak");
         assertEquals(productById.getPrice(), BigDecimal.valueOf(4000.00));
     }
 
     @Test
-    @DisplayName("should be return throw")
-    void getProductWithThrow() {
+    void shouldBeReturnProductWithThrow() {
 
+        //when
         User user = new User();
         user.setId(1L);
+
+        //then
         assertThrows(ResponseStatusException.class, () -> productService.getProductById(1L));
         assertThrows(ResponseStatusException.class, () -> productService.getUserByIdProduct(user));
     }
 
     @Test
-    @DisplayName("should be save product, don't have to be null")
-    void addNewProduct() {
-        given(productRepository.save(any())).willReturn(convertDto());
+    void ShouldBeSaveProductAndDontHaveToBeANull() {
+        //given
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+        given(productRepository.save(productArgumentCaptor.capture())).willReturn(convertDto());
+
+        //when
         Product product = productService.addNewProduct(prepareProductDto());
-        Assertions.assertNotNull(product);
-        assertEquals(product.getName(), prepareProductDto().getName());
-        assertEquals(product.getDescription(), prepareProductDto().getDescription());
-        assertEquals(product.getPrice(), prepareProductDto().getPrice());
+
+        //then
+        Product saveProduct = productArgumentCaptor.getValue();
+        assertNotNull(saveProduct);
+        assertEquals(prepareProductDto().getName(), product.getName());
+        assertEquals(prepareProductDto().getDescription(), product.getDescription());
+        assertEquals(prepareProductDto().getPrice(), product.getPrice());
     }
 
     @Test
-    @DisplayName("should be update product, don't have to be null")
-    void update() {
+    void shouldBeUpdateProductAndDontHaveToBeANull() {
+        //given
         given(productRepository.save(any())).willReturn(convertDto());
+
+        //when
         Product update = productService.update(prepareProductDto(), convertDto());
+
+        //then
         Assertions.assertNotNull(update);
         assertEquals(update.getName(), prepareProductDto().getName());
         assertEquals(update.getDescription(), prepareProductDto().getDescription());
@@ -110,7 +136,10 @@ class ProductServiceTest {
     }
 
     @Test
-    void deleteById() {
+    void ShouldByDeleteProductById() {
+        //then
+        assertThrows(ResponseStatusException.class, () -> productService.deleteById(1L));
+
 
     }
 
@@ -118,6 +147,7 @@ class ProductServiceTest {
         Product product = new Product();
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.map(prepareProductDto(), product);
+        product.setId(1L);
         return product;
     }
 
@@ -135,10 +165,11 @@ class ProductServiceTest {
         productDto.setDescription("zwierze");
         productDto.setUser(prepareUser());
         productDto.setPrice(BigDecimal.valueOf(200.00));
+        productDto.setId(1L);
         return productDto;
     }
 
-    private List<Product> prepareData() {
+    private List<Product> prepareProductsData() {
         return Arrays.asList(
                 new Product("Buty", "Nowe", new User(), BigDecimal.valueOf(200.00)),
                 new Product("Auto", "Stare", new User(), BigDecimal.valueOf(10000.00)),

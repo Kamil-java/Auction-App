@@ -39,13 +39,6 @@ public class UserDto {
         this.location = location;
     }
 
-    public Location getLocationDto() {
-        return location;
-    }
-
-    public void setLocationDto(Location location) {
-        this.location = location;
-    }
 
     public String getEmail() {
         return email;

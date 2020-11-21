@@ -82,4 +82,5 @@ public class BiddingService {
 
         return bidding;
     }
+    //TODO create to db query replacing the user
 }

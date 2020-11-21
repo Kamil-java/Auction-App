@@ -38,6 +38,10 @@ public class Bidding {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public BigDecimal getMinAmount() {
         return minAmount;
     }

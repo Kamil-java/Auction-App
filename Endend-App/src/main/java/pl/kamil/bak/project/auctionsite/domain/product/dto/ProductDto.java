@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public class ProductDto {
+    private Long id;
     @NotBlank
     @Size(min = 2, max = 20,message = "value from 2 to 20")
     private String name;
@@ -50,5 +51,13 @@ public class ProductDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
