@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,6 +36,7 @@ class BiddingControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+
     @Test
     @WithMockUser
     void getAll() throws Exception {
@@ -48,6 +50,9 @@ class BiddingControllerTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.length()").value(3))
                 .andDo(print());
     }
 
@@ -82,12 +87,13 @@ class BiddingControllerTest {
     }
 
     @Test
+    @WithMockUser
     void addBidding() throws Exception {
         //given
         given(biddingService.crateBidding(prepareBiddingDto(), prepareUser())).willReturn(prepareBidding());
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/bidding"));
+        ResultActions resultActions = mockMvc.perform(post("/bidding").with(csrf()));
 
         //then
         resultActions

@@ -8,6 +8,7 @@ import pl.kamil.bak.project.auctionsite.domain.product.service.ProductService;
 import pl.kamil.bak.project.auctionsite.domain.product.dto.ProductDto;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.domain.provider.session.UserSessionProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 
