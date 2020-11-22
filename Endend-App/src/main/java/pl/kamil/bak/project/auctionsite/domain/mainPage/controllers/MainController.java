@@ -23,5 +23,10 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/biddings")
+    public String bidding(){
+        return "bidding";
+    }
+
 
 }

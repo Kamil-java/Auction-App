@@ -20,14 +20,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
 
     public WebSecurityConfig(UserService userService) {
-        this.userService = userService;;
+        this.userService = userService;
+
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> userService.findByEmail(email).orElseThrow(() -> {
-             throw new UsernameNotFoundException("No user Found with username: " + email);
-         });
+            throw new UsernameNotFoundException("No user Found with username: " + email);
+        });
     }
 
 
@@ -35,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/bidding", "/products/owned").authenticated()
+                .antMatchers(HttpMethod.GET, "/bidding", "/products/owned").authenticated()
                 .antMatchers(HttpMethod.GET, "/products").permitAll()
                 .antMatchers(HttpMethod.POST, "/products").hasAuthority(Type.PREMIUM.name())
                 .antMatchers(HttpMethod.PUT, "/product/{id}").authenticated()
@@ -50,19 +51,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .httpBasic()
 //                .and()
 //                .csrf().disable();
-                    .loginPage("/login").permitAll()
-                    .defaultSuccessUrl("/main-page", true)
-                    .passwordParameter("password")
-                    .usernameParameter("username")
+                .loginPage("/login").permitAll()
+                .defaultSuccessUrl("/main-page", true)
+                .passwordParameter("password")
+                .usernameParameter("username")
                 .and()
                 .rememberMe()
-                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
-                    .key("userSecret!")
-                    .rememberMeParameter("remember-me")
+                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+                .key("userSecret!")
+                .rememberMeParameter("remember-me")
                 .and()
                 .logout()
-                    .clearAuthentication(true)
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "remember-me", "Idea-52a54c20lll").permitAll();
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me", "Idea-52a54c20lll").permitAll()
+                .and()
+                .cors();
     }
 }
