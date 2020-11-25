@@ -43,10 +43,10 @@ public class UserController {
     }
 
 
-    @GetMapping("/sing-up")
+    @GetMapping("/sign-up")
     public String register(@ModelAttribute UserDto userDto, Model model) {
         model.addAttribute("user", userDto);
-        return "sing-up";
+        return "sign-up";
     }
 
     @GetMapping("/login")
@@ -59,7 +59,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/sing-up")
+    @PostMapping("/sign-up")
     public String save(@Valid UserDto user, BindingResult result, RedirectAttributes redirectAttributes, LocationDto location, AddressDto address) {
         if (userService.userEmailExists(user.getEmail())) {
             result.addError(new FieldError("userDto", "email", "Email address already exist"));
@@ -74,7 +74,7 @@ public class UserController {
         }
         
         if (result.hasErrors()) {
-            return "sing-up";
+            return "sign-up";
         }
         redirectAttributes.addFlashAttribute("message", "Success! Your registration is now complete, pleas check your email to activate your account!");
         userService.addUser(user, location, address);

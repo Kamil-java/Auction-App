@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/bidding")
+@CrossOrigin
 public class BiddingController {
     private final BiddingService biddingService;
     private final UserSessionProvider sessionProvider;

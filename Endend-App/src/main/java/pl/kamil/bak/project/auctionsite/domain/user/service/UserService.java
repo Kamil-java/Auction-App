@@ -102,7 +102,7 @@ public class UserService {
         }else {
             user.setType(Type.NORMAL);
         }
-
+        userRepository.save(user);
     }
 
     public boolean userEmailExists(String email){

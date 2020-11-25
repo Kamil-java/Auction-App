@@ -43,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/products/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/products/{id}").authenticated()
                 .antMatchers("/", "/sing-up", "/activation", "/css/**", "/main-page").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 //TODO restore the commented parts
                 .formLogin()

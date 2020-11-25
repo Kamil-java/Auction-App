@@ -48,6 +48,9 @@ class LocationServiceTest {
 
         //then
         assertThat(location).isNotNull().isNotSameAs(prepareLocationDto());
+        assertThat(location.getAddress()).isNotNull();
+        assertThat(location.getCity()).isNotBlank().isNotEmpty().isEqualTo("abc");
+        assertThat(location.getProvince()).isNotBlank().isNotEmpty().isEqualTo("abc");
     }
 
     @Test
@@ -62,6 +65,9 @@ class LocationServiceTest {
 
         //then
         assertThat(update).isNotNull().isNotSameAs(prepareLocationDto());
+        assertThat(update.getAddress()).isNotNull();
+        assertThat(update.getCity()).isNotBlank().isNotEmpty().isEqualTo("abc");
+        assertThat(update.getProvince()).isNotBlank().isNotEmpty().isEqualTo("abc");
     }
 
     private AddressDto prepareAddressDto(){
