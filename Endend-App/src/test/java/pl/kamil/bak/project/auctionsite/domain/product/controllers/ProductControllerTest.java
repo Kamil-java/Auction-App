@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import pl.kamil.bak.app.test.ControllerTestConfiguration;
 import pl.kamil.bak.project.auctionsite.domain.product.dto.ProductDto;
 import pl.kamil.bak.project.auctionsite.domain.product.service.ProductService;
+import pl.kamil.bak.project.auctionsite.model.enums.Type;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 

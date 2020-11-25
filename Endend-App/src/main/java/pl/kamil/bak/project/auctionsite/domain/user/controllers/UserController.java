@@ -2,6 +2,7 @@ package pl.kamil.bak.project.auctionsite.domain.user.controllers;
 
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,12 +37,6 @@ public class UserController {
         webDataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    @GetMapping("/owner")
-    @ResponseBody
-    public String getNameOwner() {
-        return getPrincipal.getPrincipal().getUserName();
-    }
-
 
     @GetMapping("/sign-up")
     public String register(@ModelAttribute UserDto userDto, Model model) {
@@ -60,6 +55,7 @@ public class UserController {
 
 
     @PostMapping("/sign-up")
+//    @ResponseStatus(HttpStatus.CREATED)
     public String save(@Valid UserDto user, BindingResult result, RedirectAttributes redirectAttributes, LocationDto location, AddressDto address) {
         if (userService.userEmailExists(user.getEmail())) {
             result.addError(new FieldError("userDto", "email", "Email address already exist"));

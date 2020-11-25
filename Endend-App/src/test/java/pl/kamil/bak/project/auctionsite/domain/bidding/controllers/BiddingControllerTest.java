@@ -1,5 +1,6 @@
 package pl.kamil.bak.project.auctionsite.domain.bidding.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,12 +14,16 @@ import pl.kamil.bak.app.test.ControllerTestConfiguration;
 import pl.kamil.bak.project.auctionsite.domain.bidding.dto.BiddingDto;
 import pl.kamil.bak.project.auctionsite.domain.bidding.service.BiddingService;
 import pl.kamil.bak.project.auctionsite.model.biddingEntity.Bidding;
+import pl.kamil.bak.project.auctionsite.model.enums.Status;
+import pl.kamil.bak.project.auctionsite.model.enums.Type;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,6 +36,9 @@ class BiddingControllerTest {
 
     @MockBean
     private BiddingService biddingService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @Autowired
@@ -59,7 +67,7 @@ class BiddingControllerTest {
     @Test
     void getAllOwned() throws Exception {
         //given
-        given(biddingService.getAllBiddingByUser("name")).willReturn(prepareListBidding());
+        given(biddingService.getAllBiddingByUser(prepareUser().getUserName())).willReturn(prepareListBidding());
 
         //when
         final ResultActions resultActions = mockMvc.perform(get("/bidding/owned"));
@@ -67,6 +75,7 @@ class BiddingControllerTest {
         //then
         resultActions
                 .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"))
                 .andDo(print());
     }
 
@@ -87,32 +96,37 @@ class BiddingControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = {"PREMIUM"})
     void addBidding() throws Exception {
         //given
         given(biddingService.crateBidding(prepareBiddingDto(), prepareUser())).willReturn(prepareBidding());
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/bidding").with(csrf()));
+        String requestString = objectMapper.writeValueAsString(prepareBiddingDto());
+        ResultActions resultActions = mockMvc.perform(post("/bidding")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestString));
 
         //then
         resultActions
-                .andExpect(status().isForbidden())
+                .andExpect(status().isCreated())
                 .andDo(print());
 
     }
 
     @Test
+    @WithMockUser
     void update() throws Exception {
         //given
         given(biddingService.updatePrice(prepareUser(), 2.00, 1L)).willReturn(prepareBidding());
 
         //when
-        ResultActions resultActions = mockMvc.perform(put("/bidding/{id}", 1L));
+        ResultActions resultActions = mockMvc.perform(put("/bidding/{id}", 1L).param("price", "2.00").with(csrf()));
 
         //then
         resultActions
-                .andExpect(status().isForbidden())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 
@@ -121,6 +135,8 @@ class BiddingControllerTest {
         user.setUserName("name");
         user.setEmail("name");
         user.setId(1L);
+        user.setType(Type.PREMIUM);
+        user.setStatus(Status.ACTIVE);
         return user;
     }
 
@@ -141,7 +157,9 @@ class BiddingControllerTest {
 
     private BiddingDto prepareBiddingDto() {
         BiddingDto biddingDto = new BiddingDto();
-        biddingDto.setUser(prepareUser());
+        biddingDto.setProduct(prepareProduct());
+        biddingDto.setMinAmount(BigDecimal.valueOf(2.00));
+        biddingDto.setPromoted(false);
         return biddingDto;
     }
 
