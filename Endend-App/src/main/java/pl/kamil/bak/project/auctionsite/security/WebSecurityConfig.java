@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> userService.findByEmail(email).orElseThrow(() -> {
-            throw new UsernameNotFoundException("No user Found with username: " + email);
+            throw new UsernameNotFoundException("No user Found with email: " + email);
         });
     }
 
@@ -37,16 +37,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/bidding", "/products/owned").authenticated()
-                .antMatchers(HttpMethod.GET, "/products").permitAll()
+                .antMatchers(HttpMethod.GET, "/products", "/products/{name}").permitAll()
                 .antMatchers(HttpMethod.POST, "/bidding").hasAuthority(Type.PREMIUM.name())
                 .antMatchers(HttpMethod.POST, "/products").authenticated()
                 .antMatchers(HttpMethod.PUT, "/products/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/products/{id}").authenticated()
-                .antMatchers("/", "/sign-up", "/activation", "/css/**", "/main-page").permitAll()
+                .antMatchers("/", "/sign-up", "/activation", "/css/**", "/main-page", "/assets/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                //TODO restore the commented parts
                 .formLogin()
+                //TODO restore the commented parts
 //                .permitAll()
 //                .and()
 //                .httpBasic()
@@ -65,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me", "Idea-52a54c20lll").permitAll()
+                .deleteCookies("JSESSIONID", "remember-me").permitAll()
                 .and()
                 .cors();
     }

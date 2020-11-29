@@ -43,15 +43,16 @@ public class StarterUser {
     private void init() {
         User admin = new User();
         Bidding biddingAdmin = new Bidding();
-        Product shoes = new Product("Buty", "Nike nowe", admin, BigDecimal.valueOf(200.00));
+        Product computer = new Product("Komputer", "Asus", admin, BigDecimal.valueOf(200.00));
         Product tShirt = new Product("Koszulka", "M", admin, BigDecimal.valueOf(20.00));
         ShoppingCart shoppingCart1 = new ShoppingCart();
         shoppingCart1.setUser(admin);
-        biddingAdmin.setMinAmount(shoes.getPrice());
+        biddingAdmin.setMinAmount(computer.getPrice());
         biddingAdmin.setPromoted(true);
         biddingAdmin.setCurrentPrice(biddingAdmin.getMinAmount());
         biddingAdmin.setUser(admin);
-        biddingAdmin.setProduct(shoes);
+        biddingAdmin.setProduct(computer);
+//        biddingAdmin.setEndBidding(LocalDateTime.now().plusSeconds(20));
         admin.setEmail("kam@op.pl");
         admin.setUserName("Kamil");
         admin.setPassword(encoder.encode("pass"));
@@ -59,7 +60,7 @@ public class StarterUser {
         admin.setStatus(Status.ACTIVE);
         admin.setType(Type.PREMIUM);
         admin.setLocation(locationService.addLocation(new LocationDto("slask", "kato", null), new AddressDto("123", "23", "23321")));
-        admin.setProduct(Arrays.asList(shoes, tShirt, new Product("Auto", "Opel Astra", admin, BigDecimal.valueOf(15000.00))));
+        admin.setProduct(Arrays.asList(computer, tShirt, new Product("Auto", "Opel Astra", admin, BigDecimal.valueOf(15000.00))));
         admin.setBidding(Collections.singletonList(biddingAdmin));
 
 
@@ -72,7 +73,7 @@ public class StarterUser {
         biddingUser.setPromoted(false);
         biddingUser.setCurrentPrice(biddingUser.getMinAmount());
         biddingUser.setUser(user);
-        biddingUser.setEndBidding(LocalDateTime.now().plusSeconds(20));
+//        biddingUser.setEndBidding(LocalDateTime.now().plusSeconds(20));
         biddingUser.setProduct(phone);
         user.setEmail("lau@op.pl");
         user.setUserName("Laura");
@@ -106,7 +107,7 @@ public class StarterUser {
         ));
         shoppingCart2.setProducts(Arrays.asList(
                 comp,
-                shoes,
+                computer,
                 tShirt
         ));
         userRepository.save(admin);

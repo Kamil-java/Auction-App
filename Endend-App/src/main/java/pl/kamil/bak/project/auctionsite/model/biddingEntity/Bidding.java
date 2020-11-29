@@ -1,6 +1,7 @@
 package pl.kamil.bak.project.auctionsite.model.biddingEntity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 public class Bidding {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     private BigDecimal minAmount;
@@ -24,6 +26,7 @@ public class Bidding {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    @JsonIgnore
     private long winnerUserId;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "id")

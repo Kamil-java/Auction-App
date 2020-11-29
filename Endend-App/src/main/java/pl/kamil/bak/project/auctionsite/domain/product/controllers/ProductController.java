@@ -4,6 +4,7 @@ package pl.kamil.bak.project.auctionsite.domain.product.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pl.kamil.bak.project.auctionsite.domain.product.service.ProductService;
 import pl.kamil.bak.project.auctionsite.domain.product.dto.ProductDto;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
@@ -35,6 +36,14 @@ public class ProductController {
             return new ArrayList<>();
         }
         return productService.getAll();
+    }
+
+    @GetMapping("/name")
+    public List<Product> getProductByName(@RequestParam(value = "name") String name){
+        if (name.isEmpty() || name.isBlank() || productService.findProductByName(name).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return productService.findProductByName(name);
     }
 
 

@@ -36,15 +36,15 @@ public class BiddingController {
         return biddingService.getBidding(id);
     }
 
-    @GetMapping("/cart")
-    public void settlement(){
-        biddingService.addBiddingProductToCart();
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Bidding addBidding(@RequestBody BiddingDto biddingDto) {
         return biddingService.crateBidding(biddingDto, sessionProvider.getPrincipal());
+    }
+
+    @PostMapping("/cart")
+    public void settlement(){
+        biddingService.addBiddingProductToCart();
     }
 
     @PutMapping("/{id}")

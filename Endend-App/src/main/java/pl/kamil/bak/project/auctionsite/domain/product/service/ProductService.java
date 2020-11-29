@@ -45,6 +45,10 @@ public class ProductService {
         });
     }
 
+    public List<Product> findProductByName(String name){
+        return productRepository.findProductsByName(name);
+    }
+
 
     @Transactional
     public Product addNewProduct(ProductDto productDto) {
