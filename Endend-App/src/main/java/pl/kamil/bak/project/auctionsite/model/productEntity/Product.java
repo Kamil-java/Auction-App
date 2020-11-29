@@ -1,6 +1,8 @@
 package pl.kamil.bak.project.auctionsite.model.productEntity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
+import pl.kamil.bak.project.auctionsite.domain.shoppingcart.controllers.CartController;
 import pl.kamil.bak.project.auctionsite.model.biddingEntity.Bidding;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
@@ -25,6 +27,8 @@ public class Product {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
     private BigDecimal price;
+    @JsonView(CartController.class)
+    private int amount;
 
     //TODO delete this below constructor after ended project
 
@@ -80,4 +84,11 @@ public class Product {
         this.price = price;
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 }

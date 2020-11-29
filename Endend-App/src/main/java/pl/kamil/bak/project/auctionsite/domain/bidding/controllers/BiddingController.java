@@ -22,27 +22,33 @@ public class BiddingController {
     }
 
     @GetMapping
-    public List<Bidding> getAll(){
+    public List<Bidding> getAll() {
         return biddingService.getAll();
     }
+
     @GetMapping("/owned")
-    public List<Bidding> getAllOwned(){
+    public List<Bidding> getAllOwned() {
         return biddingService.getAllBiddingByUser(sessionProvider.getPrincipal().getUserName());
     }
 
     @GetMapping("/{id}")
-    public Bidding getById(@PathVariable("id") long id){
+    public Bidding getById(@PathVariable("id") long id) {
         return biddingService.getBidding(id);
+    }
+
+    @GetMapping("/cart")
+    public void settlement(){
+        biddingService.addBiddingProductToCart();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Bidding addBidding(@RequestBody BiddingDto biddingDto){
+    public Bidding addBidding(@RequestBody BiddingDto biddingDto) {
         return biddingService.crateBidding(biddingDto, sessionProvider.getPrincipal());
     }
 
     @PutMapping("/{id}")
-    public Bidding update(@PathVariable("id") long id, @RequestParam double price){
+    public Bidding update(@PathVariable("id") long id, @RequestParam double price) {
         return biddingService.updatePrice(sessionProvider.getPrincipal(), price, id);
     }
 

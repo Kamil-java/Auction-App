@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.web.server.ResponseStatusException;
 import pl.kamil.bak.project.auctionsite.domain.bidding.dao.BiddingRepository;
 import pl.kamil.bak.project.auctionsite.domain.bidding.dto.BiddingDto;
+import pl.kamil.bak.project.auctionsite.domain.shoppingcart.service.CartService;
 import pl.kamil.bak.project.auctionsite.model.biddingEntity.Bidding;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
 
@@ -31,12 +32,15 @@ class BiddingServiceTest {
     @Mock
     private BiddingRepository biddingRepository;
 
+    @Mock
+    private CartService cartService;
+
     private BiddingService biddingService;
 
     @BeforeEach
     public void init() {
         ModelMapper modelMapper = new ModelMapper();
-        biddingService = new BiddingService(biddingRepository, modelMapper);
+        biddingService = new BiddingService(biddingRepository, modelMapper, cartService);
     }
 
 

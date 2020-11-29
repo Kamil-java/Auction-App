@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import pl.kamil.bak.project.auctionsite.domain.bidding.dao.BiddingRepository;
 import pl.kamil.bak.project.auctionsite.domain.bidding.dto.BiddingDto;
+import pl.kamil.bak.project.auctionsite.domain.shoppingcart.service.CartService;
 import pl.kamil.bak.project.auctionsite.model.biddingEntity.Bidding;
 import pl.kamil.bak.project.auctionsite.model.enums.Type;
 import pl.kamil.bak.project.auctionsite.model.userEntity.User;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class BiddingService {
     private final BiddingRepository biddingRepository;
     private final ModelMapper modelMapper;
+    private final CartService cartService;
 
-    public BiddingService(BiddingRepository biddingRepository, ModelMapper modelMapper) {
+    public BiddingService(BiddingRepository biddingRepository, ModelMapper modelMapper, CartService cartService) {
         this.biddingRepository = biddingRepository;
         this.modelMapper = modelMapper;
+        this.cartService = cartService;
     }
 
     public List<Bidding> getAll() {
@@ -35,7 +38,7 @@ public class BiddingService {
     }
 
     public Bidding getBidding(long id) {
-       biddingRepository.findById(id).ifPresent(bidding -> {
+        biddingRepository.findById(id).ifPresent(bidding -> {
             if (bidding.getEndBidding().isBefore(LocalDateTime.now())) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
@@ -65,7 +68,7 @@ public class BiddingService {
         if (first.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
-        if (price <= getBidding(id).getCurrentPrice().doubleValue()){
+        if (price <= getBidding(id).getCurrentPrice().doubleValue()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         getBidding(id).setCurrentPrice(BigDecimal.valueOf(price));
@@ -82,5 +85,13 @@ public class BiddingService {
 
         return bidding;
     }
-    //TODO create to db query replacing the user
+
+    public void addBiddingProductToCart() {
+        biddingRepository.findAll().forEach(bidding -> {
+            if (bidding.getEndBidding().isBefore(LocalDateTime.now())) {
+                cartService.save(bidding.getProduct(), bidding.getWinnerUserId());
+            }
+        });
+
+    }
 }

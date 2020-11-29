@@ -55,7 +55,6 @@ public class UserController {
 
 
     @PostMapping("/sign-up")
-//    @ResponseStatus(HttpStatus.CREATED)
     public String save(@Valid UserDto user, BindingResult result, RedirectAttributes redirectAttributes, LocationDto location, AddressDto address) {
         if (userService.userEmailExists(user.getEmail())) {
             result.addError(new FieldError("userDto", "email", "Email address already exist"));

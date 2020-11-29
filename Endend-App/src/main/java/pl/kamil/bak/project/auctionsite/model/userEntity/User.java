@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.kamil.bak.project.auctionsite.model.biddingEntity.Bidding;
+import pl.kamil.bak.project.auctionsite.model.cartEntity.ShoppingCart;
 import pl.kamil.bak.project.auctionsite.model.productEntity.Product;
 import pl.kamil.bak.project.auctionsite.model.enums.Role;
 import pl.kamil.bak.project.auctionsite.model.enums.Status;
@@ -43,6 +44,8 @@ public class User implements UserDetails {
     @JsonManagedReference
     @OneToMany(targetEntity = Bidding.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Bidding> bidding = new ArrayList<>();
+    @OneToOne
+    private ShoppingCart shoppingCart;
 
 
 
@@ -170,5 +173,13 @@ public class User implements UserDetails {
 
     public void setBidding(List<Bidding> bidding) {
         this.bidding = bidding;
+    }
+
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 }

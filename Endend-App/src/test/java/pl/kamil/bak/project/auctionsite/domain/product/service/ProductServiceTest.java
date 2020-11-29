@@ -51,7 +51,7 @@ class ProductServiceTest {
 
 
     @Test
-    void shouldBeReturnUserByIdProduct() {
+    void shouldReturnUserByIdProduct() {
         //given
         given(productRepository.findProductByUserId(2L)).willReturn(prepareProductsData());
 
@@ -66,7 +66,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldBeReturnArrayProducts() {
+    void shouldReturnArrayProducts() {
         //given
         given(productRepository.findAll()).willReturn(prepareProductsData());
 
@@ -78,7 +78,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldBeReturnProductById() {
+    void shouldReturnProductById() {
         //given
         given(productRepository.findById(2L)).willReturn(Optional.ofNullable(prepareProductsData().get(2)));
 
@@ -92,7 +92,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldBeReturnProductWithThrow() {
+    void shouldReturnProductWithThrow() {
 
         //when
         User user = new User();
@@ -104,24 +104,25 @@ class ProductServiceTest {
     }
 
     @Test
-    void ShouldBeSaveProductAndDontHaveToBeANull() {
+    void shouldSaveProductAndDontHaveToBeANull() {
         //given
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
         given(productRepository.save(productArgumentCaptor.capture())).willReturn(convertDto());
 
         //when
-        Product product = productService.addNewProduct(prepareProductDto());
+        ProductDto productDto = prepareProductDto();
+        Product product = productService.addNewProduct(productDto);
 
         //then
         Product saveProduct = productArgumentCaptor.getValue();
         assertNotNull(saveProduct);
-        assertEquals(prepareProductDto().getName(), product.getName());
-        assertEquals(prepareProductDto().getDescription(), product.getDescription());
-        assertEquals(prepareProductDto().getPrice(), product.getPrice());
+        assertEquals(productDto.getName(), product.getName());
+        assertEquals(productDto.getDescription(), product.getDescription());
+        assertEquals(productDto.getPrice(), product.getPrice());
     }
 
     @Test
-    void shouldBeUpdateProductAndDontHaveToBeANull() {
+    void shouldUpdateProductAndDontHaveToBeANull() {
         //given
         given(productRepository.save(any())).willReturn(convertDto());
 
@@ -136,7 +137,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void ShouldByDeleteProductById() {
+    void shouldByDeleteProductById() {
         //then
         assertThrows(ResponseStatusException.class, () -> productService.deleteById(1L));
 
