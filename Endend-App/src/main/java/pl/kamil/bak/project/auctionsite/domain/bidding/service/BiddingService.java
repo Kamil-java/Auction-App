@@ -54,6 +54,8 @@ public class BiddingService {
         Bidding bidding = new Bidding();
         if (biddingDto.isPromoted() && user.getType().equals(Type.PREMIUM)) {
             biddingDto.setPromoted(true);
+        }else{
+            bidding.setPromoted(false);
         }
         biddingDto.setUser(user);
         modelMapper.map(biddingDto, bidding);

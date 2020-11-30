@@ -38,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/bidding", "/products/owned").authenticated()
                 .antMatchers(HttpMethod.GET, "/products", "/products/{name}").permitAll()
-                .antMatchers(HttpMethod.POST, "/bidding").hasAuthority(Type.PREMIUM.name())
+                .antMatchers(HttpMethod.POST, "/bidding").authenticated()
                 .antMatchers(HttpMethod.POST, "/products").authenticated()
                 .antMatchers(HttpMethod.PUT, "/products/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/products/{id}").authenticated()
